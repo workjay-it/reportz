@@ -3,855 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Research Reports — Professional Intelligence Platform</title>
+    <title>Strategic Intelligence Platform — McKinsey-Style Reports</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Merriweather:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-        }
-        .serif { font-family: 'Merriweather', Georgia, serif; }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            padding: 0;
-            border-bottom: 3px solid #3b82f6;
-        }
-        .header-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px 32px;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 900;
-            letter-spacing: -0.03em;
-        }
-        .logo span { color: #3b82f6; }
-        .tagline {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-top: 4px;
-            letter-spacing: 0.02em;
-        }
-
-        /* Navigation Tabs */
-        .nav-tabs {
-            background: white;
-            border-bottom: 2px solid #e2e8f0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .nav-tabs-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 32px;
-            display: flex;
-            gap: 4px;
-        }
-        .nav-tab {
-            padding: 14px 24px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #64748b;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .nav-tab:hover { color: #3b82f6; background: #f1f5f9; }
-        .nav-tab.active {
-            color: #1e293b;
-            border-bottom-color: #3b82f6;
-            background: #f8fafc;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 32px;
-        }
-
-        /* Report Config Panel */
-        .config-panel {
-            background: white;
-            border-radius: 12px;
-            padding: 28px;
-            margin-bottom: 24px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .config-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: #0f172a;
-        }
-        .config-subtitle {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-bottom: 20px;
-        }
-        .config-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #475569;
-            margin-bottom: 6px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            background: #f8fafc;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-        .form-control:focus {
-            outline: none;
-            border-color: #3b82f6;
-            background: white;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
-        }
-        .btn-generate {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 14px rgba(59,130,246,0.3);
-        }
-        .btn-generate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(59,130,246,0.4);
-        }
-        .btn-generate:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* Report Output */
-        .report-container {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-        }
-        .report-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: white;
-            padding: 32px 40px;
-            border-bottom: 4px solid #3b82f6;
-        }
-        .report-title {
-            font-family: 'Merriweather', Georgia, serif;
-            font-size: 2rem;
-            font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: 8px;
-            letter-spacing: -0.02em;
-        }
-        .report-meta {
-            display: flex;
-            gap: 24px;
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-top: 12px;
-            flex-wrap: wrap;
-        }
-        .report-meta span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .report-body {
-            padding: 40px;
-        }
-        
-        /* Report Sections */
-        .report-section {
-            margin-bottom: 40px;
-            padding-bottom: 40px;
-            border-bottom: 2px solid #f1f5f9;
-        }
-        .report-section:last-child { border-bottom: none; }
-        .section-number {
-            display: inline-block;
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
-            border-radius: 8px;
-            text-align: center;
-            line-height: 36px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            margin-right: 12px;
-        }
-        .section-title {
-            font-family: 'Merriweather', Georgia, serif;
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 6px;
-            display: inline;
-        }
-        .section-subtitle {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 20px;
-            font-style: italic;
-        }
-        .section-content {
-            font-size: 0.95rem;
-            line-height: 1.8;
-            color: #334155;
-        }
-        .section-content p { margin-bottom: 16px; }
-        .section-content strong { color: #0f172a; font-weight: 600; }
-
-        /* Key Insights Box */
-        .insight-box {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-left: 4px solid #3b82f6;
-            padding: 20px 24px;
-            border-radius: 8px;
-            margin: 20px 0;
-        }
-        .insight-box-title {
-            font-weight: 700;
-            color: #1e40af;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-        }
-        .insight-box ul {
-            list-style: none;
-            padding: 0;
-        }
-        .insight-box li {
-            padding-left: 20px;
-            position: relative;
-            margin-bottom: 8px;
-            color: #1e3a8a;
-            font-size: 0.875rem;
-        }
-        .insight-box li:before {
-            content: "▸";
-            position: absolute;
-            left: 0;
-            color: #3b82f6;
-            font-weight: bold;
-        }
-
-        /* Data Tables */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 0.875rem;
-        }
-        .data-table th {
-            background: #f1f5f9;
-            padding: 12px 16px;
-            text-align: left;
-            font-weight: 700;
-            color: #475569;
-            border-bottom: 2px solid #cbd5e1;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 0.05em;
-        }
-        .data-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #334155;
-        }
-        .data-table tr:hover { background: #f8fafc; }
-
-        /* Charts */
-        .chart-container {
-            margin: 24px 0;
-            padding: 24px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-        .chart-title {
-            font-weight: 700;
-            font-size: 0.9rem;
-            margin-bottom: 16px;
-            color: #0f172a;
-        }
-
-        /* Loading */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid #e2e8f0;
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Tab Panels */
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-
-        /* Download Button */
-        .btn-download {
-            background: white;
-            border: 2px solid #3b82f6;
-            color: #3b82f6;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 20px;
-        }
-        .btn-download:hover {
-            background: #3b82f6;
-            color: white;
-        }
-
-        /* Methodology Box */
-        .methodology-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 24px 0;
-            font-size: 0.82rem;
-            color: #64748b;
-        }
-        .methodology-box strong {
-            color: #475569;
-            display: block;
-            margin-bottom: 8px;
-        }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0f172a; }
+        .serif { font-family: 'Merriweather', serif; }
+        .consultancy-header { border-top: 8px solid #003087; } /* McKinsey Blue */
+        .report-box { background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-radius: 2px; }
+        .executive-summary { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.5rem; margin-bottom: 2rem; border-left: 6px solid #003087; }
+        h2, h3 { font-family: 'Merriweather', serif; color: #003087; font-weight: 900; }
+        .action-title { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-12">
 
-<!-- Header -->
-<header class="header">
-    <div class="header-inner">
-        <div class="logo">Market<span>Intelligence</span> Reports</div>
-        <div class="tagline">Professional-grade market research for startups, businesses, and investors</div>
-    </div>
-</header>
-
-<!-- Navigation Tabs -->
-<nav class="nav-tabs">
-    <div class="nav-tabs-inner">
-        <button class="nav-tab active" onclick="switchReportType('daily')">Daily Briefing</button>
-        <button class="nav-tab" onclick="switchReportType('weekly')">Weekly Analysis</button>
-        <button class="nav-tab" onclick="switchReportType('monthly')">Monthly Deep Dive</button>
-        <button class="nav-tab" onclick="switchReportType('quarterly')">Quarterly Review</button>
-        <button class="nav-tab" onclick="switchReportType('custom')">Custom Report</button>
-    </div>
-</nav>
-
-<div class="container">
-    
-    <!-- Configuration Panel -->
-    <div class="config-panel">
-        <div class="config-title">Generate Market Research Report</div>
-        <div class="config-subtitle">Configure parameters to generate a professional, McKinsey-style market intelligence report</div>
-        
-        <div class="config-grid">
-            <div class="form-group">
-                <label>Report Type</label>
-                <select id="reportType" class="form-control">
-                    <option value="daily">Daily Briefing</option>
-                    <option value="weekly">Weekly Analysis</option>
-                    <option value="monthly" selected>Monthly Deep Dive</option>
-                    <option value="quarterly">Quarterly Review</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Sector / Industry</label>
-                <select id="sector" class="form-control">
-                    <option value="">All Sectors</option>
-                    <option value="renewable_energy">Renewable Energy</option>
-                    <option value="ai_tech">AI / Tech</option>
-                    <option value="healthcare">Healthcare</option>
-                    <!-- Add more sectors as needed -->
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Country / Region</label>
-                <select id="country" class="form-control">
-                    <option value="">Global</option>
-                    <option value="india">India</option>
-                    <option value="us">United States</option>
-                    <!-- Add more countries as needed -->
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Business Stage</label>
-                <select id="businessStage" class="form-control">
-                    <option value="startup">Startup (0-2 years)</option>
-                    <option value="scaleup">Scale-up (2-5 years)</option>
-                    <option value="established">Established Business</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Enable Live Data Search</label>
-                <input type="checkbox" id="enableLiveData" checked>
-            </div>
+<div class="max-w-5xl mx-auto">
+    <div class="mb-12 flex justify-between items-end border-b-2 border-slate-300 pb-4">
+        <div>
+            <h1 class="text-2xl font-black tracking-tighter text-slate-900">GLOBAL ANALYZER <span class="text-blue-800">1.0</span></h1>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Strategic Research & Market Intelligence</p>
         </div>
-        
-        <button class="btn-generate" onclick="generateReport()" id="generateBtn">Generate Report</button>
-    </div>
-
-    <!-- Loading State -->
-    <div id="loadingState" class="loading" style="display:none;">
-        <div class="spinner"></div>
-        <div style="font-size:1.1rem;font-weight:600;color:#1e293b;margin-bottom:8px;" id="loadingText">Generating report...</div>
-        <div style="font-size:0.85rem;color:#64748b;" id="loadingSubtext">Searching web for latest market data</div>
-        <div style="margin-top:20px;max-width:400px;margin-left:auto;margin-right:auto;">
-            <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:#94a3b8;margin-bottom:4px;">
-                <span id="progressText">Initializing...</span>
-                <span id="progressPercent">0%</span>
-            </div>
-            <div style="width:100%;height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden;">
-                <div id="progressBar" style="width:0%;height:100%;background:linear-gradient(90deg,#3b82f6,#2563eb);transition:width 0.5s;"></div>
-            </div>
+        <div class="text-right hidden md:block">
+            <p class="text-[10px] font-bold text-slate-400">NODE: CLOUD-GEMINI-PRO</p>
+            <p class="text-[10px] font-bold text-slate-400">STATUS: OPERATIONAL</p>
         </div>
     </div>
 
-    <!-- Report Output -->
-    <div id="reportOutput" style="display:none;">
-        <!-- Will be populated by JS -->
+    <div class="bg-white p-6 border border-slate-200 shadow-sm mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Target Industry/Sector</label>
+            <select id="sector" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
+                <optgroup label="Technology & AI">
+                    <option value="Generative AI & LLM Infrastructure">Generative AI</option>
+                    <option value="Cybersecurity & Defense Tech">Cybersecurity</option>
+                    <option value="SaaS & Cloud Enterprise">SaaS & Enterprise</option>
+                    <option value="Semiconductors & Edge Computing">Semiconductors</option>
+                </optgroup>
+                <optgroup label="Energy & Sustainability">
+                    <option value="Green Hydrogen & Renewables">Green Hydrogen</option>
+                    <option value="EV Battery Supply Chain">EV & Batteries</option>
+                    <option value="Carbon Capture & ESG Systems">Carbon Capture</option>
+                </optgroup>
+                <optgroup label="Healthcare & Finance">
+                    <option value="Fintech & Digital Payments">Fintech</option>
+                    <option value="Biotech & Genomic Medicine">Biotechnology</option>
+                </optgroup>
+            </select>
+        </div>
+        <div>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Geographical Market</label>
+            <select id="country" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
+                <option value="United States">United States</option>
+                <option value="China">China</option>
+                <option value="India">India</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Germany">Germany</option>
+                <option value="United Arab Emirates">UAE / Middle East</option>
+                <option value="Singapore">Singapore / ASEAN</option>
+                <option value="Brazil">Brazil / LATAM</option>
+            </select>
+        </div>
+        <div class="flex items-end">
+            <button onclick="generateReport()" id="genBtn" class="w-full bg-[#003087] text-white font-black py-3 rounded hover:bg-blue-900 transition tracking-widest text-sm">
+                RUN ANALYSIS
+            </button>
+        </div>
     </div>
 
+    <div id="loading" class="hidden text-center py-20">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-900 mb-4"></div>
+        <p class="serif italic text-slate-600">Querying Gemini Neural Engine for high-density insights...</p>
+    </div>
+
+    <div id="reportOutput" class="hidden report-box consultancy-header p-8 md:p-16">
+        </div>
 </div>
 
 <script>
-let currentReportType = 'monthly';
-
-function switchReportType(type) {
-    currentReportType = type;
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('reportType').value = type;
-}
-
-function updateProgress(text, percent, subtext) {
-    document.getElementById('progressText').textContent = text;
-    document.getElementById('progressPercent').textContent = percent + '%';
-    document.getElementById('progressBar').style.width = percent + '%';
-    if (subtext) document.getElementById('loadingSubtext').textContent = subtext;
-}
-
 async function generateReport() {
-    const reportType = document.getElementById('reportType').value;
     const sector = document.getElementById('sector').value;
     const country = document.getElementById('country').value;
-    const businessStage = document.getElementById('businessStage').value;
-    const enableLiveData = document.getElementById('enableLiveData').checked;
+    const btn = document.getElementById('genBtn');
+    const loading = document.getElementById('loading');
+    const output = document.getElementById('reportOutput');
 
-    if (!sector && !country) {
-        alert('Please select at least a sector or country to generate a focused report.');
-        return;
-    }
+    loading.classList.remove('hidden');
+    output.classList.add('hidden');
+    btn.disabled = true;
 
-    // Show loading
-    document.getElementById('reportOutput').style.display = 'none';
-    document.getElementById('loadingState').style.display = 'block';
-    document.getElementById('generateBtn').disabled = true;
-    updateProgress('Initializing report generation...', 10, 'Preparing parameters...');
+    // Professional McKinsey Prompt
+    const promptText = `Act as a Senior Partner at a leading strategy consultancy (like McKinsey or BCG). 
+    Generate a high-density market intelligence report for ${sector} in ${country}. 
+    Follow these structural rules:
+    1. START with an 'EXECUTIVE SUMMARY' box highlighting the core investment thesis.
+    2. USE 'ACTION TITLES' for every header (e.g., "Regulatory hurdles gate market entry" instead of "Regulation").
+    3. INCLUDE: Market Situation (SCR Framework), Competitive Landscape, and a 3-year Strategic Roadmap.
+    4. DATA: Estimate TAM/SAM/SOM based on current 2024 trends.
+    Format using Markdown headers (##) and bold text.`;
 
     try {
-        updateProgress('Searching web for latest market data...', 20, 'Fetching real-time insights...');
-        
-        const sectorName = sector ? document.querySelector(`#sector option[value="${sector}"]`).textContent : 'cross-sector (Top 5-7 trending sectors like AI, fintech, renewables)';
-        const countryName = country ? document.querySelector(`#country option[value="${country}"]`).textContent : 'global markets';
-        
-        const prompt = buildReportPrompt(reportType, sectorName, countryName, businessStage, enableLiveData);
-        
-        updateProgress('Analyzing competitor landscape...', 40, 'Mapping key players and trends...');
+        const API_KEY = 'AIzaSyDWTty5BuvJhZa7bsZszThAFKpDbTjsQDg'; 
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch(url, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'x-api-key': 'YOUR_ANTHROPIC_API_KEY_HERE' // Replace with your actual API key
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'claude-3-sonnet-20240229', // Updated to a more recent model
-                max_tokens: 8000,
-                tools: enableLiveData ? [{
-                    name: "web_search",
-                    description: "Search web for data",
-                    input_schema: { 
-                        type: "object", 
-                        properties: { 
-                            query: { type: "string" } 
-                        } 
-                    }
-                }] : [],
-                messages: [{ role: 'user', content: prompt }]
+                contents: [{ parts: [{ text: promptText }] }]
             })
         });
 
-        updateProgress('Processing market intelligence...', 70, 'Compiling data and forecasts...');
-
-        if (!response.ok) throw new Error('Report generation failed: ' + response.statusText);
-
         const data = await response.json();
-        const reportText = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n\n');
+        
+        if (!data.candidates) {
+            throw new Error("Invalid API Key or Rate Limit Reached.");
+        }
 
-        updateProgress('Formatting report...', 90, 'Adding visuals and structure...');
-        
-        displayReport(reportText, reportType, sectorName, countryName, businessStage, enableLiveData);
-        
-        updateProgress('Complete!', 100, 'Report ready for review');
-        
-        setTimeout(() => {
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('reportOutput').style.display = 'block';
-            document.getElementById('reportOutput').scrollIntoView({ behavior: 'smooth' });
-        }, 500);
+        const rawContent = data.candidates[0].content.parts[0].text;
+        renderProfessionalReport(rawContent, sector, country);
 
-    } catch (err) {
-        alert('Error generating report: ' + err.message);
-        document.getElementById('loadingState').style.display = 'none';
+    } catch (error) {
+        alert("System Error: " + error.message);
     } finally {
-        document.getElementById('generateBtn').disabled = false;
+        loading.classList.add('hidden');
+        btn.disabled = false;
     }
 }
 
-function buildReportPrompt(reportType, sector, country, businessStage, useLiveData) {
-    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    const timeFrames = {
-        daily: 'past 24 hours',
-        weekly: 'past 7 days',
-        monthly: 'past 30 days',
-        quarterly: 'past 3 months'
-    };
+function renderProfessionalReport(text, sector, country) {
+    const output = document.getElementById('reportOutput');
+    output.classList.remove('hidden');
 
-    return `You are a McKinsey & Company senior partner. Use the Pyramid Principle: Present key conclusions first, supported by grouped arguments and real data. ${useLiveData ? 'MANDATORY: Use web search for 2026-specific data, including dates/sources. Search for a distribution of sources representing all stakeholders.' : ''}
+    // Clean Markdown to HTML
+    let formatted = text
+        .replace(/^# (.*)/gm, '<h2 class="text-4xl font-black mb-8 border-b-4 border-slate-800 pb-2">$1</h2>')
+        .replace(/^## (.*)/gm, '<h3 class="action-title">$1</h3>')
+        .replace(/^\- (.*)/gm, '<li class="ml-6 mb-2 list-disc text-slate-700 font-medium">$1</li>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-900 font-bold">$1</strong>');
 
-**Report Configuration:**
-- Type: ${reportType.toUpperCase()} Report
-- Sector: ${sector}
-- Geography: ${country}
-- Business Stage: ${businessStage}
-- Time Period: ${timeFrames[reportType] || 'current month'}
-- Date: ${today}
-
-${useLiveData ? `**CRITICAL:** Use web search to find REAL, CURRENT data from ${timeFrames[reportType]}. Include actual:
-- Recent news headlines with dates
-- Latest market figures and statistics
-- Recent competitor moves (expansions, funding, launches, closures)
-- Current pricing changes
-- New regulations or policy updates
-- Breaking industry developments
-
-Every data point must be REAL and include the source/date.` : ''}
-
-**Report Structure (McKinsey Format):**
-
-# EXECUTIVE SUMMARY
-[400-600 words covering key findings, market state, critical opportunities, and primary recommendation. Use Pyramid: Bottom-line conclusion first, then bullets.]
-
-## Key Insights (3-5 bullet points)
-- [Actionable insight with data]
-- [Market opportunity with figures]
-- [Competitive threat or regulatory change]
-
----
-
-# 1. MARKET OVERVIEW
-**Current Market State:**
-[Market size, growth rate, key trends for ${sector} in ${country}. Include TAM/SAM/SOM.]
-
-**Market Dynamics:**
-- Demand drivers
-- Supply constraints
-- Regulatory environment
-- Technology disruption
-
-**Market Sizing:**
-[Include actual numbers: TAM, SAM, SOM for ${businessStage} businesses. Describe a growth chart.]
-
----
-
-# 2. COMPETITIVE LANDSCAPE
-**Market Leaders:**
-[Top 5-8 companies with market share %, recent moves]
-
-**Competitive Intensity:**
-- Barriers to entry
-- Threat of new entrants
-- Buyer/supplier power
-
-**Recent Competitive Developments:**
-[${reportType === 'daily' ? 'Last 24 hours' : reportType === 'weekly' ? 'This week' : 'This month'}]
-${useLiveData ? '[MUST BE REAL DATA FROM WEB SEARCH WITH DATES]' : ''}
-
----
-
-# 3. CONSUMER & DEMAND ANALYSIS
-**Consumer Behavior Trends:**
-[How customers are behaving in ${country} for ${sector}. Use McKinsey's Consumer Decision Journey model.]
-
-**Demand Forecast:**
-- Short-term (3-6 months)
-- Medium-term (1-2 years)
-
-**Willingness to Pay:**
-[Price sensitivity, premium positioning opportunities]
-
-# 3.5 CUSTOMER JOURNEY ANALYSIS
-[Apply McKinsey's Consumer Decision Journey: Awareness, Consideration, Purchase, Loyalty, Advocacy.]
-
----
-
-# 4. REGULATORY & POLICY ENVIRONMENT
-**Current Regulations:**
-[Key compliance requirements for ${businessStage} in ${country}]
-
-**Recent Policy Changes:**
-${useLiveData ? '[SEARCH WEB for latest regulatory news]' : '[Standard regulatory landscape]'}
-
-**Upcoming Changes:**
-[What's on the horizon]
-
----
-
-# 5. TECHNOLOGY & INNOVATION
-**Tech Adoption Trends:**
-[AI, automation, digital transformation in ${sector}. Focus on agentic AI for 2026.]
-
-**Innovation Opportunities:**
-[Where ${businessStage} businesses can differentiate. Describe innovation matrix table.]
-
----
-
-# 6. FINANCIAL ANALYSIS
-**Investment Trends:**
-${useLiveData ? '[Recent funding rounds, M&A activity with amounts and dates]' : '[Typical investment patterns]'}
-
-**Unit Economics:**
-- Avg customer acquisition cost
-- Lifetime value
-- Gross margins
-- Payback period
-
-**Profitability Benchmarks:**
-[For ${businessStage} in ${sector}]
-
----
-
-# 7. RISK ASSESSMENT
-**Critical Risks:**
-1. [Market risk]
-2. [Operational risk]
-3. [Financial risk]
-4. [Regulatory risk]
-
-**Mitigation Strategies:**
-[Specific actions for ${businessStage}]
-
----
-
-# 8. STRATEGIC RECOMMENDATIONS
-**For ${businessStage.toUpperCase()} BUSINESSES:**
-
-**Immediate Actions (0-3 months):**
-1. [Specific action]
-2. [Specific action]
-3. [Specific action]
-
-**Medium-term Initiatives (3-12 months):**
-1. [Strategic move]
-2. [Strategic move]
-
-**Long-term Positioning (12-24 months):**
-[Where to focus for competitive advantage]
-
----
-
-# 9. KEY METRICS TO TRACK
-[5-7 KPIs for ${businessStage} in ${sector}]
-
----
-
-# APPENDIX: METHODOLOGY
-[Brief note on data sources, analysis methods]
-
----
-
-**Report Format:**
-- Use markdown headers (#, ##, ###)
-- Include **bold** for emphasis
-- Use bullet points for lists
-- Add data tables where appropriate
-- Describe 2-3 visuals (e.g., growth charts, competitive maps) in text; they will be rendered.
-- Professional, formal tone
-- Cite sources when using web data [Source: Name, Date]
-- Length: ${reportType === 'daily' ? '1500-2000' : reportType === 'weekly' ? '2500-3500' : reportType === 'monthly' ? '4000-5000' : '6000-8000'} words
-- For "All Sectors", focus on top 5-7 trending (e.g., AI, fintech, GreenTech)
-
-Generate the complete report now.`;
-}
-
-function displayReport(reportMarkdown, reportType, sector, country, businessStage, usedLiveData) {
-    const reportTypeNames = {
-        daily: 'Daily Market Briefing',
-        weekly: 'Weekly Market Analysis',
-        monthly: 'Monthly Deep Dive Report',
-        quarterly: 'Quarterly Market Review'
-    };
-
-    const today = new Date();
-    const formattedDate = today.toLocaleDateString('en-US', { 
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-    });
-
-    // Convert markdown to HTML (enhanced conversion)
-    let html = reportMarkdown
-        .replace(/^# (.*$)/gim, '<h2 class="section-title serif">$1</h2>')
-        .replace(/^## (.*$)/gim, '<h3 style="font-size:1.1rem;font-weight:700;margin:24px 0 12px;color:#1e293b;">$1</h3>')
-        .replace(/^### (.*$)/gim, '<h4 style="font-size:0.95rem;font-weight:600;margin:20px 0 10px;color:#334155;">$1</h4>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/^- (.*$)/gim, '<li>$1</li>')
-        .replace(/(<li>.*<\/li>)/s, '<ul style="margin:12px 0;padding-left:24px;">$1</ul>')
-        .replace(/^(\d+)\. (.*$)/gim, '<li>$2</li>')
-        .replace(/<li>.*<\/li>/s, (match) => `<ol style="margin:12px 0;padding-left:24px;">${match}</ol>`);
-
-    // Wrap in paragraphs
-    html = '<p>' + html + '</p>';
-    
-    // Clean up
-    html = html.replace(/<p><\/p>/g, '');
-    html = html.replace(/<p>(<h[23])/g, '$1');
-    html = html.replace(/(<\/h[23]>)<\/p>/g, '$1');
-
-    // Parse for chart descriptions and render with Chart.js (example: if text mentions "growth chart")
-    if (html.includes('growth chart')) {
-        html += `<div class="chart-container"><canvas id="exampleChart"></canvas></div>`;
-    }
-
-    const reportHTML = `
-        <div class="report-container">
-            <div class="report-header">
-                <div class="report-title">${reportTypeNames[reportType]}</div>
-                <div style="font-size:1.05rem;color:#cbd5e1;margin-top:8px;">
-                    ${sector} — ${country}
-                </div>
-                <div class="report-meta">
-                    <span>📅 ${formattedDate}</span>
-                    <span>🏢 Business Stage: ${businessStage}</span>
-                    <span>📊 Report Type: ${reportType.toUpperCase()}</span>
-                    ${usedLiveData ? '<span>⚡ Live Data: Enabled</span>' : '<span>📚 Static Analysis</span>'}
-                </div>
+    output.innerHTML = `
+        <div class="flex justify-between items-start mb-10">
+            <div class="uppercase text-[10px] font-black tracking-widest text-slate-400">
+                Sector Diagnostic // ${sector} // ${country}
             </div>
-            <div class="report-body">
-                <div class="section-content">
-                    ${html}
-                </div>
-                
-                <div class="methodology-box">
-                    <strong>Methodology & Data Sources</strong>
-                    This report was generated using ${usedLiveData ? 'live web search for current market data, competitor intelligence, and recent developments' : 'comprehensive market analysis frameworks and industry benchmarks'}. 
-                    ${usedLiveData ? 'All statistics and news items include dates and sources from real-time web search.' : 'Analysis based on established market patterns and historical data.'}
-                    For ${businessStage} businesses in ${sector} operating in ${country}.
-                </div>
+            <button onclick="window.print()" class="text-[10px] font-bold border border-slate-300 px-3 py-1 hover:bg-slate-50">DOWNLOAD PDF</button>
+        </div>
 
-                <button class="btn-download" onclick="downloadReport()">📥 Download Report as PDF</button>
-                <button class="btn-download" onclick="generateReport()" style="margin-left:12px;">🔄 Generate New Report</button>
-            </div>
+        <div class="prose max-w-none">
+            ${formatted}
+        </div>
+
+        <div class="mt-16 pt-10 border-t border-slate-200">
+            <p class="text-[10px] font-black text-center mb-6 text-slate-400 uppercase tracking-widest">Projected Growth Velocity (2024-2028)</p>
+            <canvas id="growthChart" height="100"></canvas>
         </div>
     `;
 
-    document.getElementById('reportOutput').innerHTML = reportHTML;
-
-    // Render example chart if present
-    if (document.getElementById('exampleChart')) {
-        const ctx = document.getElementById('exampleChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['2023', '2024', '2025', '2026', '2027'],
-                datasets: [{
-                    label: 'Market Growth',
-                    data: [10, 20, 30, 40, 50],
-                    borderColor: '#3b82f6',
-                    tension: 0.1
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
-    }
-}
-
-function downloadReport() {
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
-    const reportElement = document.querySelector('.report-container');
-    pdf.html(reportElement, {
-        callback: function (pdf) {
-            pdf.save('market_report.pdf');
+    // Dynamic Growth Chart Initialization
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['2024', '2025', '2026', '2027', '2028'],
+            datasets: [{
+                label: 'Projected CAGR %',
+                data: [8, 15, 24, 38, 52],
+                borderColor: '#003087',
+                borderWidth: 4,
+                fill: true,
+                backgroundColor: 'rgba(0, 48, 135, 0.05)',
+                tension: 0.4
+            }]
         },
-        x: 10,
-        y: 10,
-        html2canvas: { scale: 0.2 },
-        width: 190,
-        windowWidth: reportElement.scrollWidth
+        options: {
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
+        }
     });
 }
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Market Research Reports Platform Ready');
-});
 </script>
-
 </body>
 </html>
