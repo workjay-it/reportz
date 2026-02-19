@@ -3,81 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategic Intelligence Platform — McKinsey-Style Reports</title>
+    <title>Strategic Intelligence Platform — Hugging Face Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0f172a; }
         .serif { font-family: 'Merriweather', serif; }
-        .consultancy-header { border-top: 8px solid #003087; } /* McKinsey Blue */
-        .report-box { background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-radius: 2px; }
-        .executive-summary { background: #f8fafc; border: 1px solid #e2e8f0; padding: 1.5rem; margin-bottom: 2rem; border-left: 6px solid #003087; }
-        h2, h3 { font-family: 'Merriweather', serif; color: #003087; font-weight: 900; }
-        .action-title { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .consultancy-blue { border-top: 8px solid #003087; }
+        .report-card { background: white; border-radius: 4px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        h2, h3 { font-family: 'Merriweather', serif; color: #003087; }
     </style>
 </head>
-<body class="p-4 md:p-12">
+<body class="p-6 md:p-12">
 
 <div class="max-w-5xl mx-auto">
-    <div class="mb-12 flex justify-between items-end border-b-2 border-slate-300 pb-4">
+    <div class="mb-10 border-b pb-6 flex justify-between items-end">
         <div>
-            <h1 class="text-2xl font-black tracking-tighter text-slate-900">GLOBAL ANALYZER <span class="text-blue-800">1.0</span></h1>
-            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Strategic Research & Market Intelligence</p>
+            <h1 class="text-3xl font-black serif tracking-tight">GLOBAL STRATEGIC ANALYZER</h1>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500 mt-1">Hugging Face Infrastructure // Professional Tier</p>
         </div>
-        <div class="text-right hidden md:block">
-            <p class="text-[10px] font-bold text-slate-400">NODE: CLOUD-GEMINI-PRO</p>
-            <p class="text-[10px] font-bold text-slate-400">STATUS: OPERATIONAL</p>
+        <div class="hidden md:block text-right">
+            <span class="text-[10px] font-bold text-slate-400">ENGINE: MISTRAL-7B-INSTRUCT</span>
         </div>
     </div>
 
-    <div class="bg-white p-6 border border-slate-200 shadow-sm mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white p-8 rounded border border-slate-200 shadow-sm mb-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Target Industry/Sector</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Target Sector</label>
             <select id="sector" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
-                <optgroup label="Technology & AI">
-                    <option value="Generative AI & LLM Infrastructure">Generative AI</option>
-                    <option value="Cybersecurity & Defense Tech">Cybersecurity</option>
-                    <option value="SaaS & Cloud Enterprise">SaaS & Enterprise</option>
-                    <option value="Semiconductors & Edge Computing">Semiconductors</option>
+                <optgroup label="Core Industries">
+                    <option value="Artificial Intelligence & Automation">Artificial Intelligence</option>
+                    <option value="Renewable Energy Infrastructure">Renewable Energy</option>
+                    <option value="Global Supply Chain Logistics">Supply Chain</option>
+                    <option value="Biotechnology & Pharmaceuticals">Biotechnology</option>
+                    <option value="Fintech & Digital Banking">Fintech</option>
                 </optgroup>
-                <optgroup label="Energy & Sustainability">
-                    <option value="Green Hydrogen & Renewables">Green Hydrogen</option>
-                    <option value="EV Battery Supply Chain">EV & Batteries</option>
-                    <option value="Carbon Capture & ESG Systems">Carbon Capture</option>
-                </optgroup>
-                <optgroup label="Healthcare & Finance">
-                    <option value="Fintech & Digital Payments">Fintech</option>
-                    <option value="Biotech & Genomic Medicine">Biotechnology</option>
+                <optgroup label="Emerging Markets">
+                    <option value="Electric Vehicle Ecosystems">EV Ecosystems</option>
+                    <option value="Cybersecurity Infrastructure">Cybersecurity</option>
                 </optgroup>
             </select>
         </div>
         <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Geographical Market</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Market Region</label>
             <select id="country" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
                 <option value="United States">United States</option>
                 <option value="China">China</option>
+                <option value="European Union">European Union</option>
                 <option value="India">India</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="Germany">Germany</option>
-                <option value="United Arab Emirates">UAE / Middle East</option>
-                <option value="Singapore">Singapore / ASEAN</option>
-                <option value="Brazil">Brazil / LATAM</option>
+                <option value="United Arab Emirates">UAE</option>
+                <option value="Brazil">Brazil</option>
+                <option value="Singapore">Singapore</option>
             </select>
         </div>
         <div class="flex items-end">
             <button onclick="generateReport()" id="genBtn" class="w-full bg-[#003087] text-white font-black py-3 rounded hover:bg-blue-900 transition tracking-widest text-sm">
-                RUN ANALYSIS
+                GENERATE ANALYSIS
             </button>
         </div>
     </div>
 
     <div id="loading" class="hidden text-center py-20">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-900 mb-4"></div>
-        <p class="serif italic text-slate-600">Querying Gemini Neural Engine for high-density insights...</p>
+        <p class="serif italic text-slate-600">Retrieving inference data from Hugging Face...</p>
     </div>
 
-    <div id="reportOutput" class="hidden report-box consultancy-header p-8 md:p-16">
+    <div id="reportOutput" class="hidden report-card consultancy-blue p-8 md:p-16">
         </div>
 </div>
 
@@ -93,96 +85,19 @@ async function generateReport() {
     output.classList.add('hidden');
     btn.disabled = true;
 
-    // Professional McKinsey Prompt
-    const promptText = `Act as a Senior Partner at a leading strategy consultancy (like McKinsey or BCG). 
-    Generate a high-density market intelligence report for ${sector} in ${country}. 
-    Follow these structural rules:
-    1. START with an 'EXECUTIVE SUMMARY' box highlighting the core investment thesis.
-    2. USE 'ACTION TITLES' for every header (e.g., "Regulatory hurdles gate market entry" instead of "Regulation").
-    3. INCLUDE: Market Situation (SCR Framework), Competitive Landscape, and a 3-year Strategic Roadmap.
-    4. DATA: Estimate TAM/SAM/SOM based on current 2024 trends.
-    Format using Markdown headers (##) and bold text.`;
+    // Standard Consultancy Prompt Template
+    const promptText = `<s>[INST] Act as a Senior Partner at a strategy consultancy. 
+    Generate a market intelligence report for ${sector} in ${country}. 
+    1. Executive Summary: The "So What?" first.
+    2. Situation: Current market state.
+    3. Complications: Regulatory or competitive risks.
+    4. Resolution: 3 clear strategic pillars for success.
+    Use Action Titles for headings. Format with markdown (## for headers). [/INST]`;
 
     try {
-        const API_KEY = 'AIzaSyDWTty5BuvJhZa7bsZszThAFKpDbTjsQDg'; 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        // HF Inference Configuration
+        const API_TOKEN = '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'; 
+        const model = "mistralai/Mistral-7B-Instruct-v0.2";
+        const url = `https://api-inference.huggingface.co/models/${model}`;
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
-            })
-        });
-
-        const data = await response.json();
-        
-        if (!data.candidates) {
-            throw new Error("Invalid API Key or Rate Limit Reached.");
-        }
-
-        const rawContent = data.candidates[0].content.parts[0].text;
-        renderProfessionalReport(rawContent, sector, country);
-
-    } catch (error) {
-        alert("System Error: " + error.message);
-    } finally {
-        loading.classList.add('hidden');
-        btn.disabled = false;
-    }
-}
-
-function renderProfessionalReport(text, sector, country) {
-    const output = document.getElementById('reportOutput');
-    output.classList.remove('hidden');
-
-    // Clean Markdown to HTML
-    let formatted = text
-        .replace(/^# (.*)/gm, '<h2 class="text-4xl font-black mb-8 border-b-4 border-slate-800 pb-2">$1</h2>')
-        .replace(/^## (.*)/gm, '<h3 class="action-title">$1</h3>')
-        .replace(/^\- (.*)/gm, '<li class="ml-6 mb-2 list-disc text-slate-700 font-medium">$1</li>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-900 font-bold">$1</strong>');
-
-    output.innerHTML = `
-        <div class="flex justify-between items-start mb-10">
-            <div class="uppercase text-[10px] font-black tracking-widest text-slate-400">
-                Sector Diagnostic // ${sector} // ${country}
-            </div>
-            <button onclick="window.print()" class="text-[10px] font-bold border border-slate-300 px-3 py-1 hover:bg-slate-50">DOWNLOAD PDF</button>
-        </div>
-
-        <div class="prose max-w-none">
-            ${formatted}
-        </div>
-
-        <div class="mt-16 pt-10 border-t border-slate-200">
-            <p class="text-[10px] font-black text-center mb-6 text-slate-400 uppercase tracking-widest">Projected Growth Velocity (2024-2028)</p>
-            <canvas id="growthChart" height="100"></canvas>
-        </div>
-    `;
-
-    // Dynamic Growth Chart Initialization
-    const ctx = document.getElementById('growthChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['2024', '2025', '2026', '2027', '2028'],
-            datasets: [{
-                label: 'Projected CAGR %',
-                data: [8, 15, 24, 38, 52],
-                borderColor: '#003087',
-                borderWidth: 4,
-                fill: true,
-                backgroundColor: 'rgba(0, 48, 135, 0.05)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
-        }
-    });
-}
-</script>
-</body>
-</html>
+        const
