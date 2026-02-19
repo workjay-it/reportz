@@ -8,125 +8,103 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #0f172a; }
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
         .serif { font-family: 'Merriweather', serif; }
-        .consultancy-header { border-top: 8px solid #003087; }
-        .report-box { background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-radius: 2px; }
-        #debug { position: fixed; bottom: 0; left: 0; width: 100%; background: #1e293b; color: #4ade80; font-family: monospace; font-size: 10px; padding: 5px; z-index: 100; max-height: 60px; overflow-y: auto; }
+        .consultancy-blue { border-top: 6px solid #003087; }
+        .report-card { background: white; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
     </style>
 </head>
-<body class="p-6 md:p-12 pb-24">
+<body class="p-6 md:p-12">
 
 <div class="max-w-5xl mx-auto">
-    <div class="mb-10 flex justify-between items-end border-b-2 border-slate-300 pb-4">
+    <div class="mb-10 flex justify-between items-end border-b pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900 serif">STRATEGIC ANALYZER <span class="text-blue-800 italic">v3.0</span></h1>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Inference Engine: Qwen-2.5-72B-Instruct</p>
+            <h1 class="text-2xl font-black text-slate-900 serif uppercase tracking-tighter">Market Intelligence Dashboard</h1>
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Hugging Face Infrastructure v3.1</p>
         </div>
     </div>
 
-    <div class="bg-white p-6 border border-slate-200 shadow-sm mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-white p-6 border rounded shadow-sm mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Industry Sector</label>
-            <select id="sector" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
-                <option value="AI & Machine Learning">AI & Machine Learning</option>
-                <option value="Clean Energy Infrastructure">Clean Energy</option>
-                <option value="Fintech & Digital Assets">Fintech</option>
-                <option value="Global Supply Chain">Logistics</option>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Sector</label>
+            <select id="sector" class="w-full p-2 bg-slate-50 border rounded font-bold">
+                <option value="Generative AI">Generative AI</option>
+                <option value="Renewable Energy">Renewable Energy</option>
+                <option value="Fintech">Fintech</option>
+                <option value="Logistics">Logistics</option>
             </select>
         </div>
         <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Target Market</label>
-            <select id="country" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Region</label>
+            <select id="country" class="w-full p-2 bg-slate-50 border rounded font-bold">
                 <option value="United States">United States</option>
                 <option value="China">China</option>
-                <option value="European Union">European Union</option>
                 <option value="India">India</option>
-                <option value="UAE">UAE</option>
+                <option value="Germany">Germany</option>
             </select>
         </div>
         <div class="flex items-end">
-            <button onclick="startAnalysis()" id="genBtn" class="w-full bg-[#003087] text-white font-black py-3 rounded hover:bg-blue-900 transition text-sm">
-                RUN STRATEGIC ANALYSIS
+            <button onclick="generateReport()" id="genBtn" class="w-full bg-[#003087] text-white font-bold py-2 rounded hover:bg-blue-900 transition">
+                GENERATE ANALYSIS
             </button>
         </div>
     </div>
 
     <div id="loading" class="hidden text-center py-20">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-900 mb-4"></div>
-        <p class="serif italic text-slate-600" id="statusText">Initiating inference request...</p>
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-900 mx-auto mb-4"></div>
+        <p class="serif italic text-slate-600">Contacting Inference Server... (May take 30s for cold start)</p>
     </div>
 
-    <div id="reportOutput" class="hidden report-box consultancy-header p-8 md:p-16"></div>
+    <div id="reportOutput" class="hidden report-card consultancy-blue p-8 md:p-12"></div>
 </div>
 
-<div id="debug">System ready. Click button to begin.</div>
-
 <script>
+// YOUR SPECIFIC KEY
 const HF_TOKEN = "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"; 
-const log = (msg) => { document.getElementById('debug').innerHTML += `<br>> ${msg}`; };
 
-async function startAnalysis() {
+async function generateReport() {
     const sector = document.getElementById('sector').value;
     const country = document.getElementById('country').value;
     const btn = document.getElementById('genBtn');
     const loading = document.getElementById('loading');
     const output = document.getElementById('reportOutput');
-    const statusText = document.getElementById('statusText');
 
     loading.classList.remove('hidden');
     output.classList.add('hidden');
     btn.disabled = true;
-    log(`Connecting to HF API for ${sector} in ${country}...`);
 
-    const model = "Qwen/Qwen2.5-72B-Instruct";
+    // Use Llama-3 or Mistral which are very stable on HF
+    const model = "meta-llama/Meta-Llama-3-8B-Instruct"; 
     const url = `https://api-inference.huggingface.co/models/${model}`;
 
-    const prompt = `Act as a Senior Partner at a strategy consultancy. Generate a 2024 Market Intelligence Report for the ${sector} industry in ${country}. 
-    Structure the report with:
-    1. EXECUTIVE SUMMARY (Bottom-line recommendations)
-    2. COMPETITIVE LANDSCAPE (Key players and hurdles)
-    3. 3-YEAR STRATEGIC ROADMAP.
-    Use Action Titles for headers and format using Markdown (##).`;
+    const promptText = `Generate a professional McKinsey-style market report for ${sector} in ${country}. Use Action Titles, Executive Summary, and a Roadmap. Format in Markdown.`;
 
     try {
         const response = await fetch(url, {
             method: 'POST',
             headers: { 
                 'Authorization': `Bearer ${HF_TOKEN}`,
-                'Content-Type': 'application/json',
-                // This header helps with some CORS issues
-                'x-use-cache': 'false' 
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                inputs: prompt,
+                inputs: promptText,
                 parameters: { max_new_tokens: 1000 },
-                options: { wait_for_model: true } // Crucial: Tells HF to wait for model to load
+                options: { wait_for_model: true } // THIS PREVENTS "FAILED TO FETCH" ERRORS ON COLD STARTS
             })
         });
 
         const data = await response.json();
 
-        if (data.error && data.error.includes("loading")) {
-            statusText.innerText = "Model is waking up (this takes ~30s). Retrying automatically...";
-            log("Error: Model loading. Retrying in 15s...");
-            setTimeout(startAnalysis, 15000);
-            return;
-        }
+        // Check if data is an array (Standard HF response)
+        const content = Array.isArray(data) ? data[0].generated_text : (data.generated_text || data.error);
 
-        if (!response.ok) throw new Error(data.error || "Connection failed");
+        if (data.error) throw new Error(data.error);
 
-        // The response might be an array or a single object depending on the model
-        const rawContent = Array.isArray(data) ? data[0].generated_text : data.generated_text;
-        
-        if (!rawContent) throw new Error("API returned empty response");
-        
-        log("Data received. Rendering report...");
-        renderReport(rawContent, sector, country);
+        renderReport(content, sector, country);
 
-    } catch (err) {
-        log(`CRITICAL ERROR: ${err.message}`);
-        alert(`System Error: ${err.message}`);
+    } catch (error) {
+        console.error("Fetch Error:", error);
+        alert("System Error: " + error.message + "\n\nTip: If this is a CORS error, try deploying to Vercel first.");
     } finally {
         loading.classList.add('hidden');
         btn.disabled = false;
@@ -137,34 +115,35 @@ function renderReport(text, sector, country) {
     const output = document.getElementById('reportOutput');
     output.classList.remove('hidden');
 
-    let html = text
-        .replace(/^# (.*)/gm, '<h2 class="text-3xl font-black mb-6 serif">$1</h2>')
-        .replace(/^## (.*)/gm, '<h3 class="text-xl font-bold text-blue-800 mt-8 mb-4 serif border-b pb-2">$1</h3>')
-        .replace(/^\- (.*)/gm, '<li class="ml-6 mb-2 list-disc text-slate-700 font-medium">$1</li>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-900">$1</strong>');
+    // Remove the prompt from the output if the model returns it
+    const cleanText = text.replace(/Generate a professional.*?Markdown\./s, "");
+
+    let html = cleanText
+        .replace(/^## (.*)/gm, '<h3 class="text-xl font-bold text-blue-800 mt-6 mb-2 border-b pb-2">$1</h3>')
+        .replace(/^\- (.*)/gm, '<li class="ml-5 mb-1 list-disc text-slate-700">$1</li>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
 
     output.innerHTML = `
-        <div class="mb-10 text-[10px] font-black tracking-widest text-slate-400">ANALYSIS COMPLETED // ${sector} // ${country}</div>
-        <div class="prose max-w-none text-slate-800 leading-relaxed">${html}</div>
-        <div class="mt-16 pt-10 border-t border-slate-100">
-            <p class="text-center text-[10px] font-black text-slate-400 uppercase mb-4">Estimated Market Velocity Index</p>
-            <canvas id="growthChart" height="100"></canvas>
+        <div class="mb-6 flex justify-between">
+            <span class="text-[10px] font-black bg-blue-100 text-blue-800 px-2 py-1">STRATEGIC DATA</span>
+            <span class="text-[10px] font-bold text-slate-400 uppercase">${sector} // ${country}</span>
         </div>
+        <div class="prose max-w-none">${html}</div>
+        <canvas id="growthChart" class="mt-10" height="100"></canvas>
     `;
 
-    new Chart(document.getElementById('growthChart').getContext('2d'), {
+    new Chart(document.getElementById('growthChart'), {
         type: 'line',
         data: {
             labels: ['2024', '2025', '2026', '2027', '2028'],
             datasets: [{
-                label: 'Growth Index',
-                data: [15, 28, 42, 65, 88],
+                label: 'Market Growth Index',
+                data: [10, 25, 45, 70, 95],
                 borderColor: '#003087',
-                borderWidth: 4,
+                borderWidth: 3,
                 tension: 0.4
             }]
-        },
-        options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+        }
     });
 }
 </script>
