@@ -62,7 +62,7 @@
 
 <script>
 // YOUR SPECIFIC API KEY
-const HF_TOKEN = "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"; 
+const HF_TOKEN = "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"; 
 
 async function generateReport() {
     const sector = document.getElementById('sector').value;
@@ -86,4 +86,75 @@ async function generateReport() {
 
     try {
         const response = await fetch(url, {
-            method:
+            method: 'POST',
+            headers: { 
+                'Authorization': `Bearer ${HF_TOKEN}`,
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({
+                inputs: promptText,
+                parameters: { max_new_tokens: 1200, temperature: 0.6 }
+            })
+        });
+
+        const data = await response.json();
+
+        // Handle the "Model is currently loading" error automatically
+        if (data.error && data.error.includes("loading")) {
+            console.log("Model warming up, retrying in 15 seconds...");
+            setTimeout(generateReport, 15000);
+            return;
+        }
+
+        if (!response.ok) throw new Error(data.error || "Network error");
+
+        const content = data[0].generated_text || data.generated_text;
+        renderReport(content, sector, country);
+
+    } catch (error) {
+        alert("System Error: " + error.message);
+    } finally {
+        loading.classList.add('hidden');
+        btn.disabled = false;
+    }
+}
+
+function renderReport(text, sector, country) {
+    const output = document.getElementById('reportOutput');
+    output.classList.remove('hidden');
+
+    // Convert Markdown to HTML logic
+    let formatted = text
+        .replace(/^# (.*)/gm, '<h2 class="text-3xl font-black mb-6">$1</h2>')
+        .replace(/^## (.*)/gm, '<h3 class="text-xl font-bold text-blue-800 mt-8 mb-4">$1</h3>')
+        .replace(/^\- (.*)/gm, '<li class="ml-6 mb-2 list-disc text-slate-700">$1</li>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    output.innerHTML = `
+        <div class="mb-10 text-[10px] font-black tracking-widest text-slate-400">MARKET DIAGNOSTIC // ${sector} // ${country}</div>
+        <div class="prose max-w-none text-slate-800">${formatted}</div>
+        <div class="mt-16 pt-10 border-t border-slate-100">
+            <canvas id="growthChart" height="100"></canvas>
+        </div>
+    `;
+
+    // Initialize the Market Chart
+    const ctx = document.getElementById('growthChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['2024', '2025', '2026', '2027', '2028'],
+            datasets: [{
+                label: 'Projected Market CAGR',
+                data: [10, 15, 25, 38, 52],
+                borderColor: '#003087',
+                borderWidth: 4,
+                tension: 0.4
+            }]
+        },
+        options: { plugins: { legend: { display: false } } }
+    });
+}
+</script>
+</body>
+</html>
