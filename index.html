@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strategic Intelligence Platform — McKinsey Edition</title>
+    <title>Strategic Intelligence Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
@@ -12,16 +12,16 @@
         .serif { font-family: 'Merriweather', serif; }
         .consultancy-header { border-top: 8px solid #003087; }
         .report-box { background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-radius: 2px; }
-        h2, h3 { font-family: 'Merriweather', serif; color: #003087; }
+        #debug { position: fixed; bottom: 0; left: 0; width: 100%; background: #1e293b; color: #4ade80; font-family: monospace; font-size: 10px; padding: 5px; z-index: 100; max-height: 60px; overflow-y: auto; }
     </style>
 </head>
-<body class="p-6 md:p-12">
+<body class="p-6 md:p-12 pb-24">
 
 <div class="max-w-5xl mx-auto">
-    <div class="mb-12 flex justify-between items-end border-b-2 border-slate-300 pb-4">
+    <div class="mb-10 flex justify-between items-end border-b-2 border-slate-300 pb-4">
         <div>
-            <h1 class="text-2xl font-black text-slate-900">STRATEGIC ANALYZER <span class="text-blue-800">2.0</span></h1>
-            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Global Market Intelligence Dashboard</p>
+            <h1 class="text-2xl font-black text-slate-900 serif">STRATEGIC ANALYZER <span class="text-blue-800 italic">v3.0</span></h1>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Inference Engine: Qwen-2.5-72B-Instruct</p>
         </div>
     </div>
 
@@ -29,90 +29,104 @@
         <div>
             <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Industry Sector</label>
             <select id="sector" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
-                <option value="Generative AI & LLM Infrastructure">Generative AI</option>
-                <option value="Renewable Energy & ESG">Renewable Energy</option>
-                <option value="Cybersecurity & Defense">Cybersecurity</option>
-                <option value="Fintech & Payments">Fintech</option>
+                <option value="AI & Machine Learning">AI & Machine Learning</option>
+                <option value="Clean Energy Infrastructure">Clean Energy</option>
+                <option value="Fintech & Digital Assets">Fintech</option>
+                <option value="Global Supply Chain">Logistics</option>
             </select>
         </div>
         <div>
-            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Target Country</label>
+            <label class="block text-[10px] font-black uppercase text-slate-400 mb-2">Target Market</label>
             <select id="country" class="w-full p-3 bg-slate-50 border border-slate-300 rounded font-bold text-slate-700">
                 <option value="United States">United States</option>
                 <option value="China">China</option>
+                <option value="European Union">European Union</option>
                 <option value="India">India</option>
-                <option value="Germany">Germany</option>
-                <option value="United Arab Emirates">UAE</option>
+                <option value="UAE">UAE</option>
             </select>
         </div>
         <div class="flex items-end">
-            <button onclick="generateReport()" id="genBtn" class="w-full bg-[#003087] text-white font-black py-3 rounded hover:bg-blue-900 transition text-sm">
-                GENERATE ANALYSIS
+            <button onclick="startAnalysis()" id="genBtn" class="w-full bg-[#003087] text-white font-black py-3 rounded hover:bg-blue-900 transition text-sm">
+                RUN STRATEGIC ANALYSIS
             </button>
         </div>
     </div>
 
     <div id="loading" class="hidden text-center py-20">
         <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-900 mb-4"></div>
-        <p class="serif italic text-slate-600">Model is processing your strategic request...</p>
+        <p class="serif italic text-slate-600" id="statusText">Initiating inference request...</p>
     </div>
 
     <div id="reportOutput" class="hidden report-box consultancy-header p-8 md:p-16"></div>
 </div>
 
-<script>
-// YOUR SPECIFIC API KEY
-const HF_TOKEN = "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"; 
+<div id="debug">System ready. Click button to begin.</div>
 
-async function generateReport() {
+<script>
+const HF_TOKEN = "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"; 
+const log = (msg) => { document.getElementById('debug').innerHTML += `<br>> ${msg}`; };
+
+async function startAnalysis() {
     const sector = document.getElementById('sector').value;
     const country = document.getElementById('country').value;
     const btn = document.getElementById('genBtn');
     const loading = document.getElementById('loading');
     const output = document.getElementById('reportOutput');
+    const statusText = document.getElementById('statusText');
 
     loading.classList.remove('hidden');
     output.classList.add('hidden');
     btn.disabled = true;
+    log(`Connecting to HF API for ${sector} in ${country}...`);
 
-    // Use a high-performance model to avoid "loading" delays
     const model = "Qwen/Qwen2.5-72B-Instruct";
     const url = `https://api-inference.huggingface.co/models/${model}`;
 
-    const promptText = `Act as a Senior Partner at a strategy consultancy. 
-    Generate a market intelligence report for ${sector} in ${country}. 
-    Structure: Executive Summary, Situation, Complications, and 3-year Roadmap.
-    Use Action Titles for headers. Format in Markdown.`;
+    const prompt = `Act as a Senior Partner at a strategy consultancy. Generate a 2024 Market Intelligence Report for the ${sector} industry in ${country}. 
+    Structure the report with:
+    1. EXECUTIVE SUMMARY (Bottom-line recommendations)
+    2. COMPETITIVE LANDSCAPE (Key players and hurdles)
+    3. 3-YEAR STRATEGIC ROADMAP.
+    Use Action Titles for headers and format using Markdown (##).`;
 
     try {
         const response = await fetch(url, {
             method: 'POST',
             headers: { 
                 'Authorization': `Bearer ${HF_TOKEN}`,
-                'Content-Type': 'application/json' 
+                'Content-Type': 'application/json',
+                // This header helps with some CORS issues
+                'x-use-cache': 'false' 
             },
             body: JSON.stringify({
-                inputs: promptText,
-                parameters: { max_new_tokens: 1200, temperature: 0.6 }
+                inputs: prompt,
+                parameters: { max_new_tokens: 1000 },
+                options: { wait_for_model: true } // Crucial: Tells HF to wait for model to load
             })
         });
 
         const data = await response.json();
 
-        // Handle the "Model is currently loading" error automatically
         if (data.error && data.error.includes("loading")) {
-            console.log("Model warming up, retrying in 15 seconds...");
-            setTimeout(generateReport, 15000);
+            statusText.innerText = "Model is waking up (this takes ~30s). Retrying automatically...";
+            log("Error: Model loading. Retrying in 15s...");
+            setTimeout(startAnalysis, 15000);
             return;
         }
 
-        if (!response.ok) throw new Error(data.error || "Network error");
+        if (!response.ok) throw new Error(data.error || "Connection failed");
 
-        const content = data[0].generated_text || data.generated_text;
-        renderReport(content, sector, country);
+        // The response might be an array or a single object depending on the model
+        const rawContent = Array.isArray(data) ? data[0].generated_text : data.generated_text;
+        
+        if (!rawContent) throw new Error("API returned empty response");
+        
+        log("Data received. Rendering report...");
+        renderReport(rawContent, sector, country);
 
-    } catch (error) {
-        alert("System Error: " + error.message);
+    } catch (err) {
+        log(`CRITICAL ERROR: ${err.message}`);
+        alert(`System Error: ${err.message}`);
     } finally {
         loading.classList.add('hidden');
         btn.disabled = false;
@@ -123,36 +137,34 @@ function renderReport(text, sector, country) {
     const output = document.getElementById('reportOutput');
     output.classList.remove('hidden');
 
-    // Convert Markdown to HTML logic
-    let formatted = text
-        .replace(/^# (.*)/gm, '<h2 class="text-3xl font-black mb-6">$1</h2>')
-        .replace(/^## (.*)/gm, '<h3 class="text-xl font-bold text-blue-800 mt-8 mb-4">$1</h3>')
-        .replace(/^\- (.*)/gm, '<li class="ml-6 mb-2 list-disc text-slate-700">$1</li>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    let html = text
+        .replace(/^# (.*)/gm, '<h2 class="text-3xl font-black mb-6 serif">$1</h2>')
+        .replace(/^## (.*)/gm, '<h3 class="text-xl font-bold text-blue-800 mt-8 mb-4 serif border-b pb-2">$1</h3>')
+        .replace(/^\- (.*)/gm, '<li class="ml-6 mb-2 list-disc text-slate-700 font-medium">$1</li>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-900">$1</strong>');
 
     output.innerHTML = `
-        <div class="mb-10 text-[10px] font-black tracking-widest text-slate-400">MARKET DIAGNOSTIC // ${sector} // ${country}</div>
-        <div class="prose max-w-none text-slate-800">${formatted}</div>
+        <div class="mb-10 text-[10px] font-black tracking-widest text-slate-400">ANALYSIS COMPLETED // ${sector} // ${country}</div>
+        <div class="prose max-w-none text-slate-800 leading-relaxed">${html}</div>
         <div class="mt-16 pt-10 border-t border-slate-100">
+            <p class="text-center text-[10px] font-black text-slate-400 uppercase mb-4">Estimated Market Velocity Index</p>
             <canvas id="growthChart" height="100"></canvas>
         </div>
     `;
 
-    // Initialize the Market Chart
-    const ctx = document.getElementById('growthChart').getContext('2d');
-    new Chart(ctx, {
+    new Chart(document.getElementById('growthChart').getContext('2d'), {
         type: 'line',
         data: {
             labels: ['2024', '2025', '2026', '2027', '2028'],
             datasets: [{
-                label: 'Projected Market CAGR',
-                data: [10, 15, 25, 38, 52],
+                label: 'Growth Index',
+                data: [15, 28, 42, 65, 88],
                 borderColor: '#003087',
                 borderWidth: 4,
                 tension: 0.4
             }]
         },
-        options: { plugins: { legend: { display: false } } }
+        options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
     });
 }
 </script>
